@@ -102,11 +102,6 @@ void	rsread (
 	memset(resptr->rf_data, NULLCH, RF_DATALEN);
 	nbytes = read(fd, resptr->rf_data, ntohl(reqptr->rf_len));
 
-#ifdef DEBUG
-	printf("DEBUG: read from desc %d specified file returns %d \n",
-			fd, nbytes);
-#endif
-	
 	if (nbytes < 0) {
 		resptr->rf_pos = reqptr->rf_pos;
 		resptr->rf_len = 0; /* set length to zero */

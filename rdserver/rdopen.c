@@ -28,10 +28,6 @@ void	rdopen (
 	int32	modebits;		/* mode bits from message	*/
 	int	sreturn;		/* stat return value		*/
 
-#ifdef DEBUG
-	printf("DEBUG: reached rdopen\n");
-#endif
-
 	/* If disk is already open return SUCCESS */
 
 	if (findex >= 0) {
@@ -46,23 +42,14 @@ void	rdopen (
 	sreturn = stat(reqptr->rd_id, &sbuff);
 
 	if (sreturn < 0) {	/* file does not exist */
-#ifdef DEBUG
-		printf("DEBUG: creating file %s\n", reqptr->rd_id);
-#endif
 		fd = rdofile(reqptr->rd_id, O_RDWR|O_CREAT);
 	} else {
-#ifdef DEBUG
-		printf("DEBUG: opening old file %s\n",reqptr->rd_id);
-#endif
 		fd = rdofile(reqptr->rd_id, O_RDWR);
 	}
 
 	/* if open failed or open file table is full, send error */
 
 	if (fd < 0) {
-#ifdef DEBUG
-		printf("DEBUG: fd is %d and rdopen sends error\n", fd);
-#endif
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,
 			 sizeof(struct rd_msg_ores) );

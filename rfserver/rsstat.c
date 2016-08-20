@@ -22,7 +22,6 @@ void	rsstat (
 {
 	struct	stat	stbuf;		/* buffer for file status	*/
 	int	sreturn;		/* stat return value		*/
-/* DEBUG */ printf("DEBUG: reached rsstat\n");
 
 	sreturn = stat(reqptr->rf_name, &stbuf);
 

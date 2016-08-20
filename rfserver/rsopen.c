@@ -8,6 +8,7 @@
 #include <fcntl.h>
 
 #include "xinudefs.h"
+#include "file.h"
 #include "rfilesys.h"
 #include "rfserver.h"
 
@@ -27,10 +28,6 @@ void	rsopen (
 	struct	stat	sbuff;		/* stat buffer			*/
 	int32	modebits;		/* mode bits from message	*/
 	int	sreturn;		/* stat return value		*/
-
-#ifdef DEBUG
-	printf("DEBUG: reached rsopen\n");
-#endif
 
 	sreturn = stat(reqptr->rf_name, &sbuff);
 
@@ -69,28 +66,16 @@ void	rsopen (
 	/* open the file or create if it does not exist */
 
 	if (sreturn < 0) {	/* file does not exist */
-#ifdef DEBUG
-		printf("DEBUG: creating file %s\n",reqptr->rf_name);
-#endif
 		fd = rsofile(reqptr->rf_name, O_RDWR|O_CREAT);
 	} else if (sbuff.st_mode & S_IFDIR) {
-#ifdef DEBUG
-		printf("DEBUG: opening directory %s\n", reqptr->rf_name);
-#endif
 		fd = rsodir(reqptr->rf_name);
 	} else {
-#ifdef DEBUG
-		printf("DEBUG: opening old file %s\n",reqptr->rf_name);
 		fd = rsofile(reqptr->rf_name, O_RDWR);
-#endif
 	}
 
 	/* if open failed or open file table is full, send error */
 
 	if (fd < 0) {
-#ifdef DEBUG
-		printf("DEBUG: fd is %d and rsopen sends error\n", fd);
-#endif
 		resptr->rf_mode = reqptr->rf_mode;
 		snderr( (struct rf_msg_hdr *)reqptr,
 			(struct rf_msg_hdr *)resptr,
@@ -99,9 +84,6 @@ void	rsopen (
 	}
 
 	/* Return OK status */
-#ifdef DEBUG
-	printf("DEBUG: fd is %d and rsopen sends OK\n", fd);
-#endif
 
 	resptr->rf_mode = reqptr->rf_mode;
 	sndok ( (struct rf_msg_hdr *)reqptr,

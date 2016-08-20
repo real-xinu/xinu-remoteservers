@@ -22,10 +22,6 @@ void	rdclose (
 {
 	int	retval;			/* return value			*/
 
-#ifdef DEBUG
-	printf("DEBUG: reached rdclose\n");
-#endif
-
 	if (findex < 0) {		/* disk is not open		*/
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,

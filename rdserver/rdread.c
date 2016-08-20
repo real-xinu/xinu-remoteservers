@@ -31,9 +31,6 @@ void	rdread (
 	/* if disk is not open, return error */
 
 	if (findex < 0) {
-#ifdef DEBUG
-		printf("read from disk that is not open\n");
-#endif
 		resptr->rd_blk = reqptr->rd_blk;
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,
@@ -54,9 +51,6 @@ void	rdread (
 	/* if requested block is beyond EOF, return error */
 
 	if ( (retval<0) || (offset > buf.st_size) ) {
-#ifdef DEBUG
-		printf("read from beyond EOF\n");
-#endif
 		resptr->rd_blk = reqptr->rd_blk;
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,
@@ -68,16 +62,8 @@ void	rdread (
 
 	lseek(fd, offset, SEEK_SET);
 	nbytes = read(fd, resptr->rd_data, RD_BLKSIZ);
-#ifdef DEBUG
-	printf("DEBUG: read from desc %d specified file returns %d \n",
-			fd, nbytes);
-#endif
 	
 	if (nbytes != RD_BLKSIZ) {
-#ifdef DEBUG
-		printf("read does not return a block (%d bytes)\n", 
-				nbytes);
-#endif
 		resptr->rd_blk = reqptr->rd_blk;
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,

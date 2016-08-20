@@ -1,5 +1,6 @@
 /* rfserver.h - definintions for the remote file server (on Unix) */
 
+#include <dirent.h>
 
 extern	int	sock;			/* UDP socket used to receive	*/
 					/*   requests & send responses	*/

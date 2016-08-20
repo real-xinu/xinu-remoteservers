@@ -6,10 +6,6 @@
 #									#
 #########################################################################
 
-# Ensure one and only one of the following are set
-#DEBUGFLAGS= 	-DDEBUG
-DEBUGFLAGS=
-
 rdserver:	rdserver.o rdopen.o rdclose.o rdread.o rdwrite.o	\
 		rddelete.o rdofile.o snderr.o sndok.o
 		gcc -o rdserver rdserver.o rdopen.o			\
@@ -17,31 +13,31 @@ rdserver:	rdserver.o rdopen.o rdclose.o rdread.o rdwrite.o	\
 			rdofile.o snderr.o sndok.o
 
 rdserver.o:	rdserver.c
-		gcc $(DEBUGFLAGS) -c rdserver.c
+		gcc -c rdserver.c
 
 clean:
 		rm -f *.o .,* core rdserver
 
 rdopen.o:	rdopen.c
-		gcc $(DEBUGFLAGS) -c rdopen.c
+		gcc -c rdopen.c
 
 rdclose.o:	rdclose.c
-		gcc $(DEBUGFLAGS) -c rdclose.c
+		gcc -c rdclose.c
 
 rdread.o:	rdread.c
-		gcc $(DEBUGFLAGS) -c rdread.c
+		gcc -c rdread.c
 
 rdwrite.o:	rdwrite.c
-		gcc $(DEBUGFLAGS) -c rdwrite.c
+		gcc -c rdwrite.c
 
 rddelete.o:	rddelete.c
-		gcc $(DEBUGFLAGS) -c rddelete.c
+		gcc -c rddelete.c
 
 rdofile.o:	rdofile.c
-		gcc $(DEBUGFLAGS) -c rdofile.c
+		gcc -c rdofile.c
 
 snderr.o:	snderr.c
-		gcc $(DEBUGFLAGS) -c snderr.c
+		gcc -c snderr.c
 
 sndok.o:	sndok.c
-		gcc $(DEBUGFLAGS) -c sndok.c
+		gcc -c sndok.c

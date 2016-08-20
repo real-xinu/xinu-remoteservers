@@ -21,7 +21,6 @@ void	rstrunc (
 	)
 {
 	int	fd;			/* file descriptor		*/
-/* DEBUG */ printf("DEBUG: reached rstrunc\n");
 
 	/* if file is open, close it */
 

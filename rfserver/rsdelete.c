@@ -22,10 +22,6 @@ void	rsdelete (
 {
 	int	retval;			/* return value			*/
 
-#ifdef DEBUG
-	printf("DEBUG: reached rsdelete\n");
-#endif
-
 	/* if file is open, close it */
 
 	if (findex >= 0) {

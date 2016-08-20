@@ -53,11 +53,6 @@ int	main (int argc, char *argv[])
 	char	*to, *from;		/* used during name copy	*/
 	int	len;			/* length of name		*/
 
-#ifdef DEBUG
-	char	*typnams[] = {"error", "read", "write", "open", "close",
-					"delete"};
-#endif
-
 	/* initialize table that records open files */
 
 	for (i=0; i<MAXDISKS; i++) {
@@ -99,24 +94,6 @@ int	main (int argc, char *argv[])
 
 		n = recvfrom(sock, &inbuf, MAXMSG, 0,
 			(struct sockaddr *) &senderip, &addrlen);
-#ifdef DEBUG
-		printf("Recv returns %d bytes\n", n);
-		for (i=0; i<n; i++) {
-			printf("%02x ",0xff&inbuf[i]);
-			if ( ((i+1)%16) == 0) {
-				printf("\n");
-			}
-			if (i > 96) {
-				printf("...");
-				break;
-			}
-		}
-		printf("\n");
-
-		/* ignore if message is too small or an error occurrred	*/
-		printf("DEBUG: message length is %d  and minimum is %d\n",
-				n, sizeof(struct rd_msg_hdr));
-#endif
 
 		if ( n < sizeof(struct rd_msg_hdr) ) {
 			continue;
@@ -126,16 +103,9 @@ int	main (int argc, char *argv[])
 
 		msgtyp = ntohs(mptr->rd_type & 0xffff);
 		if ( (msgtyp < RD_MIN_REQ) || (msgtyp > RD_MAX_REQ) ) {
-#ifdef DEBUG
-			printf("DEBUG: ignoring because message type "
-					"%04x is out of range\n", msgtyp);
-#endif
 			continue;
 		}
-#ifdef DEBUG
-		printf("\n\nDEBUG: message type %04x ---------->  %s\n", 
-				msgtyp, typnams[msgtyp>>4]);
-#endif
+		
 		/* if incoming sequence is 1, reset local seq */
 
 		thisseq = ntohl(mptr->rd_seq);
@@ -146,15 +116,7 @@ int	main (int argc, char *argv[])
 		/* ignore if sequence in packet is non-zero and is less	*/
 		/*	than the server's sequence number		*/
 
-#ifdef DEBUG
-		printf("DEBUG: incomming seq: %d  local seq: %d)\n",
-				thisseq, seq);
-#endif
 		if ( (thisseq != 0) && (thisseq < seq) ) {
-#ifdef DEBUG
-			printf("DEBUG: ignoring because sequence "
-					"is bad \n");
-#endif
 			continue;
 		}
 
@@ -169,15 +131,9 @@ int	main (int argc, char *argv[])
 			}
 		}
 		if (len >= RD_IDLEN) {
-#ifdef DEBUG
-			printf("DEBUG: ignoring ID that's too long\n");
-#endif
 			snderr(mptr, rptr, sizeof(struct rd_msg_hdr) );
 			continue;
 		}
-#ifdef DEBUG
-		printf("DEBUG: ID is %s\n", mptr->rd_id);
-#endif
 
 		/* Ignore if ID contains '/' */
 
@@ -192,9 +148,6 @@ int	main (int argc, char *argv[])
 		}
 		if (err > 0) {
 			snderr(mptr, rptr, sizeof(struct rd_msg_hdr) );
-#ifdef DEBUG
-			printf("DEBUG: ignoring because ID contains /\n");
-#endif
 			continue;
 		}
 
