@@ -22,11 +22,8 @@ void	rsrmdir (
 {
 	int	retval;			/* return value			*/
 
-	if (findex >=0) {		/* file exists and is open	*/
-		snderr( (struct rf_msg_hdr *)reqptr,
-			(struct rf_msg_hdr *)resptr,
-			 sizeof(struct rf_msg_mres) );
-		return;
+	if (findex >=0 && ofiles[findex].desc != -1) {		/* file exists and is open	*/
+            close(ofiles[findex].desc);
 	}
 	retval = rmdir(reqptr->rf_name);
 	if (retval < 0) {

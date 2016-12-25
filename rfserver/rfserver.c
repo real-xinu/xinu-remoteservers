@@ -69,7 +69,8 @@ int	main (int argc, char *argv[])
 		printf("Error opening socket");
 		exit(1);
 	}
-
+        
+        printf("\n\n---RF SERVER PORT: %d\n\n", RF_SERVER_PORT);
 	/* Bind the socket */
 
 	retval = bind( sock, (struct sockaddr *)&senderip,

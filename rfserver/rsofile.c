@@ -44,6 +44,7 @@ int	rsofile (
 	/* Place name and file descriptor in ofiles table */
 
 	ofiles[i].desc = fd;
+        ofiles[i].dirptr = NULL;
 	to = ofiles[i].name;
 	while (*to++ = *name++) {
 		;

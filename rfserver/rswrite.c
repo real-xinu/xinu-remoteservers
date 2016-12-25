@@ -27,9 +27,21 @@ void	rswrite (
 	int	i;			/* index of ofiles table	*/
 	char	*from, *to;		/* used during name copy	*/
 
+        
+        //Make sure not writing to a directory
+	retval = stat(reqptr->rf_name, &buf);
+	if(retval >= 0) {
+		if(buf.st_mode & S_IFDIR) {
+			snderr( (struct rf_msg_hdr *)reqptr,
+				(struct rf_msg_hdr *)resptr,
+				sizeof(struct rf_msg_wres) );
+			return;
+		}
+	}
+
 	/* if file is not open, try to open it */
 
-	if (findex < 0) {
+	if (findex < 0 || ofiles[findex].desc < 0) {
 		if ( (fd = rsofile(reqptr->rf_name,O_RDWR)) < 0 ) {
 			resptr->rf_pos = reqptr->rf_pos;
 			resptr->rf_len = 0; /* set length to zero */
