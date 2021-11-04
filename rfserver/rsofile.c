@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -44,7 +45,6 @@ int	rsofile (
 	/* Place name and file descriptor in ofiles table */
 
 	ofiles[i].desc = fd;
-        ofiles[i].dirptr = NULL;
 	to = ofiles[i].name;
 	while (*to++ = *name++) {
 		;

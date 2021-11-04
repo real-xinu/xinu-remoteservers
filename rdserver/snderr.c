@@ -25,6 +25,10 @@ void	snderr (
 	int	i;			/* counts bytes in header	*/
 	char	*from, *to;		/* pointers used during copy	*/
 	int	retval;
+#ifdef DEBUG
+	printf("DEBUG: sending an error for type %02x\n", 
+			reqptr->rd_type);
+#endif
 
 	/* copy header to from request to response */
 
@@ -44,8 +48,28 @@ void	snderr (
 
 	/* Return response to source */
 
+#ifdef DEBUG
+	printf("Sending %d bytes\n", len);
+	to = (char *)resptr;
+	for (i=0; i<len; i++) {
+		printf("%02x ",0xff&*to++);
+		if ( ((i+1)%32) == 0) {
+			printf("\n");
+		}
+		if (i> 190) {
+			printf("...");
+			break;
+		}
+	}
+ 	printf("\n");
+#endif
 	retval = sendto(sock, (const void *)resptr, len, 0,
 		(struct sockaddr *)&senderip, addrlen);
+#ifdef DEBUG
+	if(retval<0) {
+		printf("DEBUG: sendto fails\n");
+	}
+#endif
 
 	return;
 }

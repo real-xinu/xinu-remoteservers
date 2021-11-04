@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -21,6 +22,10 @@ void	rsmkdir (
 	)
 {
 	int	retval;			/* return value			*/
+
+#ifdef DEBUG
+	printf("DEBUG: reached rsmkdir\n");
+#endif
 
 	if (findex >=0) {		/* file exists and is open	*/
 		snderr( (struct rf_msg_hdr *)reqptr,

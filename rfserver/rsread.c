@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -39,7 +40,7 @@ void	rsread (
 
 	/* if file is not open, try to open it */
 
-	if (findex < 0 || ofiles[findex].desc < 0) {
+	if (findex < 0) {
 		if ( (fd = rsofile(reqptr->rf_name,O_RDWR)) < 0 ) {
 			resptr->rf_pos = reqptr->rf_pos;
 			resptr->rf_len = 0; /* set length to zero */
@@ -102,6 +103,11 @@ void	rsread (
 	memset(resptr->rf_data, NULLCH, RF_DATALEN);
 	nbytes = read(fd, resptr->rf_data, ntohl(reqptr->rf_len));
 
+#ifdef DEBUG
+	printf("DEBUG: read from desc %d specified file returns %d \n",
+			fd, nbytes);
+#endif
+	
 	if (nbytes < 0) {
 		resptr->rf_pos = reqptr->rf_pos;
 		resptr->rf_len = 0; /* set length to zero */

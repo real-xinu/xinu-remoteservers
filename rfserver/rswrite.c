@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -27,21 +28,9 @@ void	rswrite (
 	int	i;			/* index of ofiles table	*/
 	char	*from, *to;		/* used during name copy	*/
 
-        
-        //Make sure not writing to a directory
-	retval = stat(reqptr->rf_name, &buf);
-	if(retval >= 0) {
-		if(buf.st_mode & S_IFDIR) {
-			snderr( (struct rf_msg_hdr *)reqptr,
-				(struct rf_msg_hdr *)resptr,
-				sizeof(struct rf_msg_wres) );
-			return;
-		}
-	}
-
 	/* if file is not open, try to open it */
 
-	if (findex < 0 || ofiles[findex].desc < 0) {
+	if (findex < 0) {
 		if ( (fd = rsofile(reqptr->rf_name,O_RDWR)) < 0 ) {
 			resptr->rf_pos = reqptr->rf_pos;
 			resptr->rf_len = 0; /* set length to zero */
@@ -92,6 +81,12 @@ void	rswrite (
 	if ( (retval<0) || (ntohl(reqptr->rf_pos) > buf.st_size) ) {
 		resptr->rf_pos = reqptr->rf_pos;
 		resptr->rf_len = 0;	 /* set length to zero */
+
+#ifdef DEBUG
+		printf("DEBUG: requested offset %d is beyond %lu\n",
+			reqptr->rf_pos, buf.st_size);
+#endif
+
 		snderr( (struct rf_msg_hdr *)reqptr,
 			(struct rf_msg_hdr *)resptr,
 			sizeof(struct rf_msg_wres) );
@@ -104,6 +99,11 @@ void	rswrite (
 	nbytes = write(fd, reqptr->rf_data, ntohl(reqptr->rf_len));
 	
 	if (nbytes < 0) {
+
+#ifdef DEBUG
+		printf("DEBUG: write failed\n");
+#endif
+
 		resptr->rf_pos = reqptr->rf_pos;
 		resptr->rf_len = 0; /* set length to zero */
 		snderr( (struct rf_msg_hdr *)reqptr,

@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -21,6 +22,7 @@ void	rstrunc (
 	)
 {
 	int	fd;			/* file descriptor		*/
+/* DEBUG */ printf("DEBUG: reached rstrunc\n");
 
 	/* if file is open, close it */
 

@@ -22,6 +22,10 @@ void	rddelete (
 {
 	int	retval;			/* return value			*/
 
+#ifdef DEBUG
+	printf("DEBUG: reached rddelete\n");
+#endif
+
 	/* if disk is open, close it */
 
 	if (findex >= 0) {

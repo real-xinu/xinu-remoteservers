@@ -1,6 +1,5 @@
 /* rfserver.h - definintions for the remote file server (on Unix) */
 
-#include <dirent.h>
 
 extern	int	sock;			/* UDP socket used to receive	*/
 					/*   requests & send responses	*/
@@ -40,9 +39,14 @@ extern	void		sndok(	struct rf_msg_hdr *,
 extern	void	rsread  (struct rf_msg_rreq *, struct rf_msg_rres *);
 extern	void	rswrite (struct rf_msg_wreq *, struct rf_msg_wres *);
 extern	void	rsopen  (struct rf_msg_oreq *, struct rf_msg_ores *);
+extern	void	rsclose (struct rf_msg_creq *, struct rf_msg_cres *);
 extern	void	rsdelete(struct rf_msg_dreq *, struct rf_msg_dres *);
 extern	void	rstrunc (struct rf_msg_treq *, struct rf_msg_tres *);
 extern	void	rsstat  (struct rf_msg_sreq *, struct rf_msg_sres *);
 extern	void	rsmkdir (struct rf_msg_mreq *, struct rf_msg_mres *);
 extern	void	rsrmdir (struct rf_msg_xreq *, struct rf_msg_xres *);
+extern	void	rsdirread(struct rf_msg_rreq *, struct rf_msg_rres *);
+extern	int	rsodir  (char *);
+
+
 extern	int	rsofile	(char *, int);

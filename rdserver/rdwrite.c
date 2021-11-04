@@ -30,6 +30,9 @@ void	rdwrite (
 	/* if disk is not open return an error */
 
 	if (findex < 0) {
+#ifdef DEBUG
+	printf("disk is not open \n");
+#endif
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,
 			sizeof(struct rd_msg_wres) );
@@ -46,7 +49,14 @@ void	rdwrite (
 	lseek(fd, offset, SEEK_SET);
 
 	nbytes = write(fd, reqptr->rd_data, RD_BLKSIZ);
+#ifdef DEBUG
+	printf("write of blk %d returns %d \n", 
+			ntohl(reqptr->rd_blk), nbytes);
+#endif
 	if (nbytes != RD_BLKSIZ) {
+#ifdef DEBUG
+		printf("DEBUG: write fails\n");
+#endif
 		resptr->rd_blk = reqptr->rd_blk;
 		snderr( (struct rd_msg_hdr *)reqptr,
 			(struct rd_msg_hdr *)resptr,

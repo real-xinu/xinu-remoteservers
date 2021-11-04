@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -22,8 +23,15 @@ void	rsrmdir (
 {
 	int	retval;			/* return value			*/
 
-	if (findex >=0 && ofiles[findex].desc != -1) {		/* file exists and is open	*/
-            close(ofiles[findex].desc);
+#ifdef DEBUG
+	printf("DEBUG: reached rsrmdir\n");
+#endif
+
+	if (findex >=0) {		/* file exists and is open	*/
+		snderr( (struct rf_msg_hdr *)reqptr,
+			(struct rf_msg_hdr *)resptr,
+			 sizeof(struct rf_msg_mres) );
+		return;
 	}
 	retval = rmdir(reqptr->rf_name);
 	if (retval < 0) {

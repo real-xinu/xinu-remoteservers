@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 
 #include "xinudefs.h"
@@ -21,6 +22,10 @@ void	rsdelete (
 	)
 {
 	int	retval;			/* return value			*/
+
+#ifdef DEBUG
+	printf("DEBUG: reached rsdelete\n");
+#endif
 
 	/* if file is open, close it */
 

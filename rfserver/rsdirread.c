@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <netinet/in.h>
 #include <fcntl.h>
+#include <dirent.h>
 
 #include "xinudefs.h"
 #include "rfilesys.h"
@@ -23,7 +25,6 @@ void	rsdirread (
 	struct	dirent *dentry;		/* An entry in the directory	*/
 	struct	rfdirent *rfdentry;
 	char	*to, *from;		/* used to copy names		*/
-	long	dentrypos;		/* dentry position to read	*/
 
 	if(findex < 0) {
 		snderr( (struct rf_msg_hdr *)reqptr,
@@ -33,9 +34,6 @@ void	rsdirread (
 	}
 
 	memset(resptr->rf_data, NULLCH, RF_DATALEN);
-
-	dentrypos = ntohl(reqptr->rf_pos) / sizeof(struct rfdirent);
-	seekdir(ofiles[findex].dirptr, dentrypos);
 	dentry = readdir(ofiles[findex].dirptr);
 	if(dentry != NULL) {
 		rfdentry = (struct rfdirent *)resptr->rf_data;
@@ -50,16 +48,12 @@ void	rsdirread (
 		while(*to++ = *from++) {
 			;
 		}
-
-		resptr->rf_pos = reqptr->rf_pos;
 		resptr->rf_len = htonl(sizeof(struct rfdirent));
-
 		sndok( (struct rf_msg_hdr *)reqptr,
 		       (struct rf_msg_hdr *)resptr,
 		       sizeof(struct rf_msg_rres) );
 	}
 	else {
-		resptr->rf_pos = reqptr->rf_pos;
 		resptr->rf_len = htonl(0);
 		sndok( (struct rf_msg_hdr *)reqptr,
 		        (struct rf_msg_hdr *)resptr,
