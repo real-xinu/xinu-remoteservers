@@ -52,6 +52,5 @@ struct	dentry	{
 	void    (*dvintr)(void);
 	byte    dvirq;
 };
-
 #define	TIMEOUT	-2
 

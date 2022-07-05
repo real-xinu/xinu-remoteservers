@@ -10,6 +10,8 @@
 #DEBUGFLAGS= 	-DDEBUG
 DEBUGFLAGS= 	
 
+all:		rfserver
+
 rfserver:	rfserver.o rsdelete.o rsmkdir.o rsopen.o		\
 		rsrmdir.o rsread.o rsstat.o rstrunc.o rsclose.o		\
 		rswrite.o rsofile.o snderr.o sndok.o rsodir.o rsdirread.o

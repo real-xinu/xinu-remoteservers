@@ -28,6 +28,8 @@ int	addrlen;			/* size of the above address	*/
 extern	void*	memset(void *, int, size_t);
 /*------------------------------------------------------------------------
  * main - implement a Xinu remote file server running on a Unix machine
+ *
+ *	use:  rfserver [UDP_port]
  *------------------------------------------------------------------------
  */
 int	main (int argc, char *argv[]) 
@@ -52,12 +54,28 @@ int	main (int argc, char *argv[])
 	int	retval;			/* return value			*/
 	char	*to, *from;		/* used during name copy	*/
 	int	len;			/* length of name		*/
+	unsigned short port;		/* Port number to use		*/
 
 #ifdef DEBUG
 	char	*typnams[] = {"error", "read", "write", "open", "delete",
 			"truncate", "size", "make directory", 
 			"remove directory", "close"};
 #endif
+
+	/* Check arguments */
+
+	if (argc > 2) {
+		fprintf(stderr,"error: use is  rfserver [port]\n");
+		exit(1);
+	}
+
+	/* Check for port argument */
+
+	if (argc == 2) {
+		port = (unsigned short)atoi(argv[1]);
+	} else {
+		port = RF_SERVER_PORT;
+	}
 
 	/* initialize table that records open files */
 
@@ -72,7 +90,7 @@ int	main (int argc, char *argv[])
 	memset((void *)&senderip, 0, (size_t) sizeof(senderip));
 	senderip.sin_family = AF_INET;
 	senderip.sin_addr.s_addr = INADDR_ANY;
-	senderip.sin_port=htons((unsigned short)RF_SERVER_PORT);
+	senderip.sin_port=htons(port);
 	pptr = getprotobyname("udp");
 	sock = socket(PF_INET, SOCK_DGRAM, pptr->p_proto);
 	if (sock < 0) {
@@ -86,11 +104,11 @@ int	main (int argc, char *argv[])
 			sizeof(senderip) );
 	if (retval < 0) {
 		printf("Error: cannot bind to UDP port %d\n\n",
-				RF_SERVER_PORT);
+				port);
 		exit(1);
 	} else {
 		printf("Server is using UDP port %d\n\n",
-				RF_SERVER_PORT);
+				port);
 	}
 
 	mptr = (struct rf_msg_hdr *)inbuf;
@@ -286,5 +304,6 @@ int	main (int argc, char *argv[])
 			rsclose(  (struct rf_msg_creq *)mptr,
 				  (struct rf_msg_cres *)rptr );
 		}
+
 	}
 }

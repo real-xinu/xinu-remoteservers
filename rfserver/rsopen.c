@@ -58,9 +58,10 @@ void	rsopen (
 		}
 	}
 
-	/* If file is already open, return OK status */
+	/* If file is already open, seek to beginning again */
 
 	if (findex >= 0) {
+		lseek(ofiles[findex].desc, (off_t)0, SEEK_SET);
 		resptr->rf_mode = reqptr->rf_mode;
 		sndok ( (struct rf_msg_hdr *)reqptr,
 			(struct rf_msg_hdr *)resptr,
@@ -83,8 +84,8 @@ void	rsopen (
 	} else {
 #ifdef DEBUG
 		printf("DEBUG: opening old file %s\n",reqptr->rf_name);
-		fd = rsofile(reqptr->rf_name, O_RDWR);
 #endif
+		fd = rsofile(reqptr->rf_name, O_RDWR);
 	}
 
 	/* if open failed or open file table is full, send error */

@@ -23,8 +23,9 @@ void	rsdirread (
 	)
 {
 	struct	dirent *dentry;		/* An entry in the directory	*/
-	struct	rfdirent *rfdentry;
 	char	*to, *from;		/* used to copy names		*/
+	int	len;			/* number of byte in name	*/
+
 
 	if(findex < 0) {
 		snderr( (struct rf_msg_hdr *)reqptr,
@@ -36,19 +37,13 @@ void	rsdirread (
 	memset(resptr->rf_data, NULLCH, RF_DATALEN);
 	dentry = readdir(ofiles[findex].dirptr);
 	if(dentry != NULL) {
-		rfdentry = (struct rfdirent *)resptr->rf_data;
-		if(dentry->d_type == DT_DIR) {
-			rfdentry->d_type = RF_DIRENT_DIR;
-		}
-		else {
-			rfdentry->d_type = RF_DIRENT_FILE;
-		}
-		to = rfdentry->d_name;
+		len = 1;
+		to = resptr->rf_data;
 		from = dentry->d_name;
 		while(*to++ = *from++) {
-			;
+			len++;
 		}
-		resptr->rf_len = htonl(sizeof(struct rfdirent));
+		resptr->rf_len = htonl(len);
 		sndok( (struct rf_msg_hdr *)reqptr,
 		       (struct rf_msg_hdr *)resptr,
 		       sizeof(struct rf_msg_rres) );

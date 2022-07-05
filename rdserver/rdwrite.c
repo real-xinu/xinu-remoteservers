@@ -16,8 +16,8 @@
  *------------------------------------------------------------------------
  */
 void	rdwrite (
-	 struct	rd_msg_wreq *reqptr,	/* ptr to read request		*/
-	 struct	rd_msg_wres *resptr	/* ptr to read response		*/
+	 struct	rd_msg_wreq *reqptr,	/* ptr to write request		*/
+	 struct	rd_msg_wres *resptr	/* ptr to write response	*/
 	)
 {
 	int	fd;			/* file descriptor		*/
@@ -28,6 +28,9 @@ void	rdwrite (
 	char	*from, *to;		/* used during name copy	*/
 
 	/* if disk is not open return an error */
+#ifdef DEBUG
+	printf("rdwrite called\n");
+#endif
 
 	if (findex < 0) {
 #ifdef DEBUG
@@ -47,7 +50,10 @@ void	rdwrite (
 
 	offset = ntohl(reqptr->rd_blk) * RD_BLKSIZ;
 	lseek(fd, offset, SEEK_SET);
-
+#ifdef DEBUG
+	printf("writing blk %d at offset %d\n", 
+			ntohl(reqptr->rd_blk), offset);
+#endif
 	nbytes = write(fd, reqptr->rd_data, RD_BLKSIZ);
 #ifdef DEBUG
 	printf("write of blk %d returns %d \n", 

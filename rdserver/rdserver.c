@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <netdb.h>
+#include <string.h>
 
 #include "xinudefs.h"
 #include "rdisksys.h"
@@ -52,13 +53,34 @@ int	main (int argc, char *argv[])
 	int	retval;			/* return value			*/
 	char	*to, *from;		/* used during name copy	*/
 	int	len;			/* length of name		*/
+	int	port;			/* UDP port number to use	*/
 
 #ifdef DEBUG
 	char	*typnams[] = {"error", "read", "write", "open", "close",
 					"delete"};
 #endif
 
-	/* initialize table that records open files */
+	/* Check arguments */
+
+	if (argc > 2) {
+		fprintf(stderr,"error: use is  rdserver [port]\n");
+		exit(1);
+	}
+
+	/* Check for port argument */
+
+	if (argc == 2) {
+		port = (unsigned short)atoi(argv[1]);
+		if (port <= 0) {
+			fprintf(stderr,"error: use is  rdserver [port]\n");
+			exit(1);
+		}
+	} else {
+		port = RD_SERVER_PORT;
+	}
+
+
+	/* initialize table that records open disks */
 
 	for (i=0; i<MAXDISKS; i++) {
 		ofiles[i].desc = -1;
@@ -70,7 +92,7 @@ int	main (int argc, char *argv[])
 	memset((void *)&senderip, 0, (size_t) sizeof(senderip));
 	senderip.sin_family = AF_INET;
 	senderip.sin_addr.s_addr = INADDR_ANY;
-	senderip.sin_port = htons(RD_SERVER_PORT);
+	senderip.sin_port = htons(port);
 	pptr = getprotobyname("udp");
 	sock = socket(PF_INET, SOCK_DGRAM, pptr->p_proto);
 	if (sock < 0) {
@@ -84,11 +106,11 @@ int	main (int argc, char *argv[])
 			sizeof(senderip) );
 	if (retval < 0) {
 		printf("Error: cannot bind to UDP port %d\n\n",
-				RD_SERVER_PORT);
+				port);
 		exit(1);
 	} else {
 		printf("Server is using UDP port %d\n\n",
-				RD_SERVER_PORT);
+				port);
 }
 
 	mptr = (struct rd_msg_hdr *)inbuf;
@@ -114,7 +136,7 @@ int	main (int argc, char *argv[])
 		printf("\n");
 
 		/* ignore if message is too small or an error occurrred	*/
-		printf("DEBUG: message length is %d  and minimum is %d\n",
+		printf("DEBUG: message length is %d  and minimum is %ld\n",
 				n, sizeof(struct rd_msg_hdr));
 #endif
 
