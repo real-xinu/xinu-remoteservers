@@ -18,8 +18,8 @@
  *------------------------------------------------------------------------
  */
 void	rsopen (
-	 struct	rf_msg_oreq *reqptr,	/* ptr to read request		*/
-	 struct	rf_msg_ores *resptr	/* ptr to read response		*/
+	 struct	rf_msg_oreq *reqptr,	/* ptr to open request		*/
+	 struct	rf_msg_ores *resptr	/* ptr to open response		*/
 	)
 {
 	int	fd;			/* file descriptor		*/
