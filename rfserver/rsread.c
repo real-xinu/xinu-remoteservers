@@ -49,35 +49,6 @@ void	rsread (
 				sizeof(struct rf_msg_rreq) );
 			return;
 		}
-		for (i=0; i<MAXFILES; i++) {
-
-			/* If entry is free, stop searching */
-
-			if (ofiles[i].desc < 0) {
-				break;
-			}
-		}
-		if (i >= MAXFILES) {	/* table is full */
-			i = fnext;	/* choose entry to close */
-			close(ofiles[fnext].desc);
-
-			/* move to next slot for the future , wrap */
-			/*	around the table, if necessary	   */
-
-			fnext++;
-			if (fnext >= MAXFILES) {
-				fnext = 0;
-			}
-		}
-		ofiles[i].desc = fd;
-		from = reqptr->rf_name;
-		to =ofiles[i].name;
-
-		/* copy name to open file table */
-
-		while ( (*to++ = *from++) ) {
-			;
-		}
 	} else {
 		fd = fptr->desc;
 	}
