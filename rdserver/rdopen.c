@@ -52,9 +52,9 @@ void	rdopen (
 		fd = rdofile(reqptr->rd_id, O_RDWR|O_CREAT);
 	} else {
 #ifdef DEBUG
-		printf("DEBUG: opening old file %s\n",reqptr->rd_id);
+		printf("DEBUG: opening old file %s in append mode\n",reqptr->rd_id);
 #endif
-		fd = rdofile(reqptr->rd_id, O_RDWR);
+		fd = rdofile(reqptr->rd_id, O_RDWR|O_APPEND);
 	}
 
 	/* if open failed or open file table is full, send error */
