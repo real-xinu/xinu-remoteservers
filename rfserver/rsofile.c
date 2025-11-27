@@ -49,5 +49,5 @@ int	rsofile (
 	while (*to++ = *name++) {
 		;
 	}
-	return 0;
+	return fd;
 }
